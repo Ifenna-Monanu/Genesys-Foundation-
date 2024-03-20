@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Headers, HttpCode, HttpStatus, Post, Req, Res } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Headers, HttpCode, HttpStatus, Post, Req, Res } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiOkResponse,
@@ -12,7 +12,7 @@ import { PaystackService } from './paystack.service';
 import { randomToken } from 'src/util/random.util';
 import { Request, Response } from 'express';
 import crypto from 'crypto';
-import { DonationStatus } from './donation.schema';
+import { Donation, DonationStatus } from './donation.schema';
 
 @Controller('donation')
 @ApiTags('donation')
@@ -51,6 +51,23 @@ export class DonationController {
     return { data: paymentInit.data };
   }
 
+
+  @Get('/all-donations')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Endpoint for getting all donations' })
+  @ApiOkResponse({
+    description: 'Get all donations',
+    type: [OneTimeDonationDTO]
+  })
+  @ApiBadRequestResponse({
+    description: 'Credentials is invalid',
+    type: ErrorResponseDTO
+  })
+  async allDonations () {
+    const donations = await this.donationService.getAllDonations();
+    return {data: donations}
+  }
+
   @Post('/webhook')
   @ApiOperation({ summary: 'Endpoint for verifying paystack payments' })
   async paystackWebHook (
@@ -72,5 +89,7 @@ export class DonationController {
         response.sendStatus(200)
     }
   }
+
+
 
 }

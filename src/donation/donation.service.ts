@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Donation, DonationModel } from './donation.schema';
+import { Donation, DonationModel, DonationStatus } from './donation.schema';
 import { FilterQuery, UpdateQuery } from 'mongoose';
 
 @Injectable()
@@ -34,5 +34,13 @@ export class DonationService {
       throw new BadRequestException('Unable to updated donation');
     }
     return result;
+  }
+
+  async getAllDonations () {
+    const donations = await this.donationModel.find({paymentStatus: DonationStatus.SUCCESSFUL});
+    if(!donations) {
+      throw new BadRequestException('Unable to get donations');
+    }
+    return donations
   }
 }
