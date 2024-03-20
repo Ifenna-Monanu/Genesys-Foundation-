@@ -2,7 +2,7 @@ import { ConfigService } from '@nestjs/config';
 import { PaystackDTO } from './donation.dto';
 import axios from 'axios';
 import { Injectable } from '@nestjs/common';
-import crypto from 'crypto';
+import { createHmac } from 'crypto';
 
 @Injectable()
 export class PaystackService {
@@ -39,8 +39,7 @@ export class PaystackService {
   };
 
   async constructPaystackHash (paystackBody: string) {
-    const hash = crypto
-    .createHmac('sha512', this.getVariables().secret)
+    const hash = createHmac('sha512', this.getVariables().secret)
     .update(paystackBody)
     .digest('hex');
     return hash;

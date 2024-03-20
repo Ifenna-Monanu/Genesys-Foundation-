@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Headers, HttpCode, HttpStatus, Post, Req } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Headers, HttpCode, HttpStatus, Post, Req, Res } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiOkResponse,
@@ -10,7 +10,7 @@ import { ErrorResponseDTO } from 'src/common/dtos/response.dto';
 import { OneTimeDonationDTO } from './donation.dto';
 import { PaystackService } from './paystack.service';
 import { randomToken } from 'src/util/random.util';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import crypto from 'crypto';
 import { DonationStatus } from './donation.schema';
 
@@ -52,23 +52,27 @@ export class DonationController {
   }
 
   @Post('/webhook')
-  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Endpoint for verifying paystack payments' })
   async paystackWebHook (
     @Headers('x-paystack-signature') signature: string,
-    @Req() request: Request
+    @Req() request: Request,
+    @Res() response: Response
   ){
     if (!signature) {
       throw new BadRequestException('Missing paystack-signature header');
     };
+    console.log(signature, "signature")
     const eventData = request.body;
+    console.log(eventData, "data")
     const hash = await this.paystackService.constructPaystackHash(JSON.stringify(eventData));
+    console.log(hash, "hash")
     if(hash == signature) {
         const txId = eventData.data.metadata.txId;
         switch(eventData.event) {
           case 'charge.success': 
             const res = await this.donationService.updateDonationStatus({txId}, {paymentStatus: DonationStatus.SUCCESSFUL}); 
         }
+        response.sendStatus(200)
     }
   }
 
