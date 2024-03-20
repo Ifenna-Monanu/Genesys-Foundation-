@@ -27,7 +27,9 @@ export class DonationService {
   }
 
   async updateDonationStatus(filter: FilterQuery<Donation>, updateValue: UpdateQuery<Donation>){
-    const result = await this.donationModel.findByIdAndUpdate({filter, updateValue });
+    const result = await this.donationModel.findOneAndUpdate(filter, updateValue, {
+      new: true
+    });
     if(!result) {
       throw new BadRequestException('Unable to updated donation');
     }

@@ -61,11 +61,8 @@ export class DonationController {
     if (!signature) {
       throw new BadRequestException('Missing paystack-signature header');
     };
-    console.log(signature, "signature")
     const eventData = request.body;
-    console.log(eventData, "data")
     const hash = await this.paystackService.constructPaystackHash(JSON.stringify(eventData));
-    console.log(hash, "hash")
     if(hash == signature) {
         const txId = eventData.data.metadata.txId;
         switch(eventData.event) {
