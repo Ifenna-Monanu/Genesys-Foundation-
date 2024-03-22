@@ -46,6 +46,7 @@ export class DonationController {
       email: donation.email,
       fullname: donation.fullname,
       amount: donation.amount,
+      initiative: donation.initiative,
       txId: token
     });
     return { data: paymentInit.data };
@@ -79,12 +80,15 @@ export class DonationController {
       throw new BadRequestException('Missing paystack-signature header');
     };
     const eventData = request.body;
+    console.log(eventData, "event")
     const hash = await this.paystackService.constructPaystackHash(JSON.stringify(eventData));
+    console.log(hash, "hash")
     if(hash == signature) {
         const txId = eventData.data.metadata.txId;
         switch(eventData.event) {
           case 'charge.success': 
             const res = await this.donationService.updateDonationStatus({txId}, {paymentStatus: DonationStatus.SUCCESSFUL}); 
+            console.log(res, "res")
         }
         response.sendStatus(200)
     }

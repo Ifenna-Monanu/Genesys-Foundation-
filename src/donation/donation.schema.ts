@@ -25,6 +25,9 @@ export class Donation {
   @Prop({ required: true })
   amount: number;
 
+  @Prop({required: false})
+  initiative?: string
+
   @Prop({ required: true })
   txId: string;
 
