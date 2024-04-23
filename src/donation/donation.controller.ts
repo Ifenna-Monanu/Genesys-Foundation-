@@ -11,8 +11,9 @@ import { OneTimeDonationDTO } from './donation.dto';
 import { PaystackService } from './paystack.service';
 import { randomToken } from 'src/util/random.util';
 import { Request, Response } from 'express';
-import crypto from 'crypto';
-import { Donation, DonationStatus } from './donation.schema';
+import {  DonationStatus } from './donation.schema';
+import { sendDonationMail } from 'src/email/email.service';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('donation')
 @ApiTags('donation')
@@ -88,6 +89,10 @@ export class DonationController {
         switch(eventData.event) {
           case 'charge.success': 
             const res = await this.donationService.updateDonationStatus({txId}, {paymentStatus: DonationStatus.SUCCESSFUL}); 
+            await sendDonationMail({
+              to: res.email,
+              token: res.fullname,
+            })
             console.log(res, "res")
         }
         response.sendStatus(200)
