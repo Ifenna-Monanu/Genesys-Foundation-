@@ -84,9 +84,11 @@ export class DonationController {
     const hash = await this.paystackService.constructPaystackHash(JSON.stringify(eventData));
     if(hash == signature) {
         const txId = eventData.data.metadata.txId;
+        console.log(txId, "TXID")
         switch(eventData.event) {
           case 'charge.success': 
-            const res = await this.donationService.updateDonationStatus({txId}, {paymentStatus: DonationStatus.SUCCESSFUL}); 
+            const res = await this.donationService.updateDonationStatus({txId}, {paymentStatus: DonationStatus.SUCCESSFUL});
+            console.log(res, "result") 
             await sendDonationMail({
               to: res.email,
               token: res.fullname,
