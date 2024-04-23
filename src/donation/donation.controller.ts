@@ -82,9 +82,12 @@ export class DonationController {
     };
     const eventData = request.body;
     const hash = await this.paystackService.constructPaystackHash(JSON.stringify(eventData));
-    console.log(hash == signature, "equal");
+    console.log(hash, "hash");
+    console.log(signature, "signatrue");
     
-    if(hash == signature) {
+    console.log(hash === signature, "equal");
+    
+    if(hash === signature) {
         const txId = eventData.data.metadata.txId;
         console.log(txId, "TXID")
         switch(eventData.event) {
