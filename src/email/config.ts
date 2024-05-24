@@ -1,5 +1,4 @@
 import * as nodemailer from 'nodemailer';
-import * as hsb from 'nodemailer-express-handlebars';
 
 const account = {
   user: 'wallex@zohomail.com',

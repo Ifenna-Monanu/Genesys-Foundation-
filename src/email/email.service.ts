@@ -55,4 +55,49 @@ async function sendDonationMail(prop: MailOptions) {
   return mail;
 }
 
-export { sendDonationMail };
+
+async function sendEmailComfirmation (prop: MailOptions) {
+    const {to, token} = prop;
+    const message = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+        <h1>${token}</h1>
+    <body>
+    </body>
+    `
+    const mailer = await transporter();
+    const options = await mailOptions(to, message, `Genesys Foundation: Comfirm Your Mail`, {
+      token,
+    });
+    const mail = await mailer.sendMail(options);
+    return mail;
+}
+
+async function sendPasswordResetEmail (prop: MailOptions) {
+    const {to, token} = prop;
+    const message = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+        <h1>${token}</h1>
+    <body>
+    </body>
+    `
+    const mailer = await transporter();
+    const options = await mailOptions(to, message, `Genesys Foundation: Password Reset`, {
+      token,
+    });
+    const mail = await mailer.sendMail(options);
+    return mail;
+}
+
+export { sendDonationMail, sendPasswordResetEmail, sendEmailComfirmation };

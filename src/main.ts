@@ -30,7 +30,7 @@ async function bootstrap() {
     app.enableShutdownHooks();
   }
 
-  // setup api documentation
+  // setup the api documentation
   setupSwagger(app);
 
   // listen to app

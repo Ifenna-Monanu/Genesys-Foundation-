@@ -13,7 +13,7 @@ import { randomToken } from 'src/util/random.util';
 import { Request, Response } from 'express';
 import {  DonationStatus } from './donation.schema';
 import { sendDonationMail } from 'src/email/email.service';
-import { ConfigService } from '@nestjs/config';
+
 
 @Controller('donation')
 @ApiTags('donation')
@@ -81,12 +81,7 @@ export class DonationController {
       throw new BadRequestException('Missing paystack-signature header');
     };
     const eventData = request.body;
-    const hash = await this.paystackService.constructPaystackHash(JSON.stringify(eventData));
-    console.log(hash, "hash");
-    console.log(signature, "signatrue");
-    
-    console.log(hash === signature, "equal");
-    
+    const hash = await this.paystackService.constructPaystackHash(JSON.stringify(eventData));    
     if(hash === signature) {
         const txId = eventData.data.metadata.txId;
         console.log(txId, "TXID")
@@ -98,7 +93,6 @@ export class DonationController {
               to: res.email,
               token: res.fullname,
             })
-            console.log(res, "res")
         }
         response.sendStatus(200)
     }

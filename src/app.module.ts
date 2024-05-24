@@ -7,6 +7,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { paginatePlugin, searchPlugin } from './common/db-plugins';
 import { DonationModule } from './donation/donation.module';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 import paystackConfig from './common/config/paystack.config';
 
 
@@ -35,7 +37,9 @@ import paystackConfig from './common/config/paystack.config';
       })
     }),
 
-    DonationModule
+    DonationModule,
+    UsersModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],
